@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gb.chrom.core.mapper.TechnicalDocumentMapper">
+
+  <resultMap type="technicalDocument" id="DocumentResult">
+    <result column="ID" property="id" />
+    <result column="NAME" property="name" />
+    <result column="FILE" property="file" />
+    <result column="TYPE" property="type" />
+    <result column="FILESIZE" property="filesize" />
+    <result column="STATUS" property="status" />
+    <result column="GMT_CREATE" property="gmtCreate" />
+  </resultMap>
+
+  <insert id="saveTechnicalDocument" parameterType="technicalDocument" flushCache="true" useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[ INSERT INTO TECHNICAL_DOCUMENT ( NAME, FILE, TYPE, FILESIZE, STATUS ) VALUES ( #{name}, #{file}, #{type}, #{filesize}, #{status} ) ]]>
+  </insert>
+  
+  <delete id="deleteTechnicalDocumentById" parameterType="long" flushCache="true">
+    <![CDATA[ DELETE FROM TECHNICAL_DOCUMENT WHERE ID = #{id} ]]>
+  </delete>
+  
+  <select id="findTechnicalDocumentForList" resultMap="DocumentResult">
+    <![CDATA[ SELECT ID, NAME, FILE, TYPE, FILESIZE, STATUS, GMT_CREATE FROM TECHNICAL_DOCUMENT ORDER BY GMT_CREATE DESC ]]>
+  </select>
+  
+</mapper>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gb.chrom.core.mapper.ReagentStockInMapper">
+
+  <resultMap type="reagentStockIn" id="ReagentStockInResult">
+    <id column="ID" property="id"/>
+    <result column="BATCH_NO" property="batchNo" />
+    <result column="REAGENT_ID" property="reagentId" />
+    <result column="REAGENT" property="reagent"/>
+    <result column="QUANTITY" property="quantity" />
+    <result column="ENTRY_TIME" property="entryTime" />
+    <result column="SURPLUS_QUANTITY" property="surplusQuantity" />
+    <result column="REMARK" property="remark" />
+    <result column="OPERATOR_ID" property="operatorId" />
+    <result column="OPERATOR" property="operator"/>
+  </resultMap>
+
+  <select id="findReagentStockInForList" parameterType="reagentStockQuery" resultMap="ReagentStockInResult">
+    <![CDATA[ 
+      SELECT ID, BATCH_NO, REAGENT_ID, REAGENT, QUANTITY, ENTRY_TIME, SURPLUS_QUANTITY, REMARK, OPERATOR_ID, OPERATOR FROM REAGENT_STOCK_IN
+    ]]>
+    <trim prefix="WHERE" prefixOverrides="AND |OR ">
+      <if test='keyword != null and keyword !=""'><![CDATA[ AND REAGENT REGEXP #{keyword} ]]></if>
+      <if test="startDate != null"><![CDATA[ AND ENTRY_TIME >= #{startDate} ]]></if>
+      <if test="endDate != null"><![CDATA[ AND ENTRY_TIME < DATE_ADD(#{endDate}, INTERVAL 1 DAY) ]]></if>
+    </trim>
+    <![CDATA[ ORDER BY ENTRY_TIME DESC ]]>
+  </select>
+  
+  <select id="findReagentAvailableStocksForList" parameterType="long" resultMap="ReagentStockInResult">
+    <![CDATA[ SELECT ID, BATCH_NO, QUANTITY, SURPLUS_QUANTITY FROM REAGENT_STOCK_IN WHERE REAGENT_ID = #{reagentId} AND SURPLUS_QUANTITY > 0 ORDER BY ENTRY_TIME ASC ]]>
+  </select>
+  
+  <update id="updateReagentStocks" parameterType="hashMap" flushCache="true">
+    <![CDATA[ UPDATE REAGENT_STOCK_IN SET SURPLUS_QUANTITY = #{stocks} WHERE BATCH_NO = #{batchNo} ]]>
+  </update>
+  
+  <insert id="saveReagentStockIn" parameterType="reagentStockIn" flushCache="true">
+    <![CDATA[ 
+      INSERT INTO REAGENT_STOCK_IN ( BATCH_NO, ENTRY_TIME, REAGENT_ID, REAGENT, QUANTITY, SURPLUS_QUANTITY, REMARK, OPERATOR_ID, OPERATOR ) 
+      VALUES ( #{batchNo}, #{entryTime}, #{reagentId}, #{reagent}, #{quantity}, #{surplusQuantity}, #{remark}, #{operatorId}, #{operator} ) 
+    ]]>
+  </insert>
+
+</mapper>

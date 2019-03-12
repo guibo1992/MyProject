@@ -1,0 +1,286 @@
+
+<div class="top">
+	<div class="topinner">
+		<div class="logo fl pt20">
+			<h1>
+				<!-- <a href="/index.html"><img src="/static/images/logo.png" /></a> -->
+			</h1>
+		</div>
+		<div class="topnav fr">
+			<ul id="menu">
+				<li><a class="axiala">合作产品<em class="iconfont icon-caret"></em></a>
+					<div class="topxlax">
+						<ul>
+							<li><a href="/game/${game.id}.html#${game.name}">${game.name}</a></li>
+						</ul>
+					</div></li>
+				<li><a href="#slide${nav?index + 2}">${nav.name}</a></li>
+			</ul>
+			<div class="cl"></div>
+		</div>
+	</div>
+</div>
+
+<div id="dowebok">
+	<div class="section" data-anchor="slide1">
+		<div class="banner">
+			<ul class="tutu">
+				<!-- <li><a href="/game/${game.id}.html#${game.name}"><img
+						src="${_static + game.image}"></a></li> -->
+			</ul>
+			<div class="yuandianx">
+				<div class="ybut lbutx"></div>
+				<div class="ybut rbutx"></div>
+				<ul>
+					<!-- <li class="cur"><img src="${_static + game.thumbnail}" />
+						<p>${game.name}</p>
+						<div class="bianx"></div></li> -->
+				</ul>
+				<div class="cl"></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="section bgboxban2" data-anchor="slide2">
+		<div class="scndtitel">
+			<h2>我们专注优秀VR/AR游戏内容创造、构建开发、发行、投资等综合业务</h2>
+		</div>
+		<div class="cl"></div>
+
+		<div class="zhansxul">
+			<ul>
+				<li class="a-fadeinL yanshi02">
+					<div class="infolex">
+						<div class="leftwenx fl">
+							<h2>
+								<span></span>游戏发行
+							</h2>
+							<p>品牌营销、渠道分发、产品运营 IT支持、客服服务</p>
+						</div>
+						<div class="picx fr">
+							<img data-src="/static/images/km1.png" />
+						</div>
+					</div>
+				</li>
+
+				<li class="scndlix a-bounceinR yanshi08">
+					<div class="infolex infolexx2">
+						<div class="picx fl">
+							<img data-src="/static/images/km2.png" />
+						</div>
+						<div class="leftwenx leftwenx2 fl">
+							<h2>
+								<span></span>游戏研发
+							</h2>
+							<p>市场热点、美术创作、玩家体验 游戏系统、量身定制</p>
+						</div>
+					</div>
+				</li>
+
+				<li class="a-fadeinL yanshi16">
+					<div class="infolex">
+						<div class="leftwenx fl">
+							<h2>
+								<span></span>团队投资
+							</h2>
+							<p>专注内容投资（100%VR/AR游戏） 目前已经成功投资了多加VR公司</p>
+						</div>
+						<div class="picx fr">
+							<img data-src="/static/images/km3.png" />
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div class="cl"></div>
+	</div>
+
+	<div class="section" data-anchor="slide3">
+		<div class="bgboxban3">
+			<div class="infoxmll">
+				<div class="sixmall">
+					<h2>新闻动态</h2>
+					<p>NEWS</p>
+				</div>
+
+				<div class="cl"></div>
+				<div class="lieboxml">
+					<div class="topicx">
+						<img data-src="${_static + news.image}" />
+					</div>
+					<div class="cl"></div>
+					<div class="fallx">
+						<div class="bottwenx">
+							<div class="lefttou fl">
+								<h2>${news.title}</h2>
+								<p class="pwenx">${news.summary}</p>
+							</div>
+							<span class="timex fr">${news.releaseDate?date}</span>
+							<div class="cl"></div>
+						</div>
+					</div>
+
+					<div class="rightxin fl">
+						<ul>
+							<li>
+								<div class="bibgmallx pointer" id="${n.id}">
+									<div class="xiaowx fl">
+										<img data-src="${_static + n.thumbnail}" />
+									</div>
+									<div class="rtwenbox fl">
+										<h2>${n.title}</h2>
+										<span class="timex">${n.releaseDate?date}</span>
+										<p class="pwenx pwenx2">${n.summary}</p>
+									</div>
+									<div class="cl"></div>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div class="morex">
+						<a class="morex1" href="/news-list.html"></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="section" data-anchor="slide4">
+		<div class="bgboxbanews">
+			<div class="infoxmll">
+				<div class="sixmall sixmall-cx">
+					<h2>游戏攻略</h2>
+					<p>WALKTHROUGH</p>
+				</div>
+				<div class="glvrand">
+					<ul>
+						<li>
+							<div class="inseglv">
+								<div class="glvpic">
+									<span><img data-src="${_static + strate.thumbnail}"
+										alt="" /></span>
+								</div>
+								<div class="glvwenst">
+									<div class="glvtme">
+										<h3>${strate.tile}</h3>
+										<span class=""> </span>
+									</div>
+									<div class="glvswll">
+										<p>${strate.summary}</p>
+									</div>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<div class="cl"></div>
+				<div class="moregl">
+					<a class="" href="/strategy/list.html">更多精彩攻略</a>
+				</div>
+				<div class="cl"></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="section" data-anchor="slide5">
+		<div class="bgboxban4">
+			<div class="fourtitl">
+				<p>我们是具有自主研发优势的VR/AR游戏娱乐生态构建企业</p>
+				<p>团队能力完整，核心团队具备十年以上游戏行业从业经历</p>
+				<p>公司团队成员来自于各知名互联网及游戏公司，如网易、久游网、7659游戏等</p>
+				<p>我们愿意和合作伙伴一起在VR/AR游戏领域共同创造新的辉煌</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="section bigsection" data-anchor="slide6">
+		<div class="mainbox">
+			<div class="imallpx">
+				<div class="ftconter">
+					<h2>加入我们</h2>
+				</div>
+				<div class="cl"></div>
+				<div class="maxulx">
+					<ul>
+						<li id="${recruit.id}" class="pointer">
+							<h2 class="hxmall">${recruit.position}</h2>
+							<p class="hxmallx">${recruit.description}</p>
+						</li>
+					</ul>
+					<div class="cl"></div>
+				</div>
+			</div>
+			<div class="cl"></div>
+		</div>
+		<div class="cl"></div>
+
+		<div class="makebg"></div>
+
+		<div class="mainboxxm">
+			<div class="imallpx">
+				<div class="ftconterx">
+					<h2>合作机构</h2>
+				</div>
+				<div class="cl"></div>
+				<div class="hezuomll">
+					<ul>
+						<li>
+							<div class="sbpicx">
+								<!-- <span> <a href="${link.linkUrl}" target="_blank"
+									title="${link.name}"> <img src="${_static + link.image}" />
+								</a>
+								</span> -->
+							</div>
+						</li>
+					</ul>
+					<div class="cl"></div>
+				</div>
+			</div>
+		</div>
+		<div class="cl"></div>
+		<div class="makebgx2"></div>
+		<div class="cl"></div>
+
+		<div class="mainboxxm2">
+			<div class="imallpx">
+				<div class="ftconter2">
+					<h2>联系我们</h2>
+				</div>
+				<div class="cl"></div>
+				<div class="hebanx">
+					<ul>
+						<li class="lxm1">
+							<p>商务合作：</p> <span>dlf@skyarvr.com</span>
+						</li>
+						<li class="lxm2">
+							<p>市场合作：</p> <span>fuyu@skyarvr.com</span>
+						</li>
+						<li class="lxm3">
+							<p>联系电话：</p> <span>010-68881681</span>
+						</li>
+					</ul>
+				</div>
+				<div class="cl"></div>
+			</div>
+		</div>
+		<div class="cl"></div>
+		<div class="footer">
+			<div class="fulsetm">
+				<a href="###">家长监护工程</a> <a href="###">服务协议</a> <a href="###">网络游戏服务格式化协议必备条款</a>
+				<a href="###">纠纷处理方式</a> <a href="###">游戏介绍</a> <a href="###">充值中心</a>
+				<a href="###">用户注册</a> <a href="###">用户登录</a>
+			</div>
+			<div class="footcopy">
+				<p>抵制不良游戏，拒绝盗版游戏，注意自我保护，谨防受骗上当，适度游戏益脑，沉迷游戏伤身，合理安排时间，享受健康生活</p>
+				<p>
+					<span>公司名称：北京天际微动科技有限公司</span> <span>公司地址：北京市海淀区华杰大厦B座
+						座负一层清创空间A01</span>
+				</p>
+				<p>
+					<span>邮箱：kf@skyarvr.com</span> <span>客服QQ：1953810746</span> <span>公司电话：010-68881681</span>
+				</p>
+			</div>
+		</div>
+		<!-- footer版权end -->
+	</div>
+</div>

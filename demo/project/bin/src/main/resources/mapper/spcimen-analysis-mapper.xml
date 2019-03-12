@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gb.chrom.core.mapper.SpecimenAnalysisMapper">
+
+  <resultMap type="specimen" id="SpecimenResult">
+    <result column="ID" property="id" />
+    <result column="HIS_ID" property="hisId" />
+    <result column="TYPE_ID" property="typeId" />
+    <result column="SERIAL_NO" property="serialNo" />
+    <result column="SPECIMENT_NO" property="specimenNo" />
+    <result column="PATIENT_ID" property="patientId" />
+    <result column="CULTURE_STATUS" property="cultureStatus" />
+    <result column="CULTURE_COMPLETED_TIME" property="cultureCompletedTime"/>
+    <result column="ANALYSIS_STATUS" property="analysisStatus" />
+    <result column="ANALYSIS_COMPLETED_TIME" property="analysisCompletedTime"/>
+    <result column="ANALYSIS_RESULT" property="analysisResult" />
+    <result column="ANALYSIS_MET_IMG" property="analysisMetImg" />
+    <result column="ANALYSIS_KAR_IMG" property="analysisKarImg" />
+    <result column="REPORT_STATUS" property="reportStatus" />
+    
+    <result column="GMT_CREATE" property="gmtCreate" />
+  </resultMap>
+  
+  <select id="findSpecimenAnalysisForList" parameterType="specimenQuery" resultMap="SpecimenResult">
+    <![CDATA[ SELECT ID, HIS_ID, TYPE_ID, SPECIMENT_NO, PATIENT_ID, CULTURE_STATUS, CULTURE_COMPLETED_TIME, ANALYSIS_STATUS, REPORT_STATUS, ANALYSIS_COMPLETED_TIME, GMT_CREATE FROM SPECIMEN ]]>
+    <trim prefix="WHERE" prefixOverrides="AND |OR ">
+      <![CDATA[ AND STATUS = 1 AND CULTURE_STATUS = 1 ]]>
+      <if test="analystId != null"><![CDATA[ AND ANALYST_ID = #{analystId} ]]></if>
+      <if test="typeId != null"><![CDATA[ AND TYPE_ID = #{typeId} ]]></if>
+      <if test='keyword != null and keyword !=""'><![CDATA[ AND ( SPECIMENT_NO LIKE CONCAT(#{keyword}, '%') OR HIS_ID LIKE CONCAT(#{keyword}, '%') ) ]]></if>
+      <if test="analysisStatus != null"><![CDATA[ AND ANALYSIS_STATUS = #{analysisStatus} ]]></if>
+    </trim>
+    <![CDATA[ ORDER BY ANALYSIS_STATUS, REPORT_STATUS, ID DESC ]]>
+  </select>
+  
+  <insert id="saveSpecimenAnalysisResult" parameterType="specimenAnalysisResult" flushCache="true">
+    <![CDATA[ 
+      INSERT INTO SPECIMEN_ANALYSIS (SPECIMEN_NO, COMPLETED_TIME, ANALYSIS_RESULT, ANALYSIS_MET_IMG, ANALYSIS_KAR_IMG, ANALYST, REMARK)
+      VALUES (#{specimenNo}, #{completedTime}, #{analysisResult}, #{analysisMetImg}, #{analysisKarImg}, #{laboratorian}, #{comment})
+    ]]>
+  </insert>
+
+</mapper>

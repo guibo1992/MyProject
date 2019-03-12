@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gb.chrom.core.mapper.FollowupMapper">
+
+  <resultMap type="followup" id="FollowupResult">
+    <id column="ID" property="id"/>
+    <result column="HIS_ID" property="hisId" />
+    <result column="SPECIMEN_NO" property="specimenNo" />
+    <result column="PATIENT_NAME" property="patientName" />
+    <result column="PATIENT_SEX" property="patientSex" />
+    <result column="PATIENT_BIRTHDATE" property="patientBirthdate" />
+    <result column="FIRST_FOLLOWUP_DATE" property="firstFollowupDate" />
+    <result column="LAST_FOLLOWUP_DATE" property="lastFollowupDate" />
+    <result column="FOLLOWUP_TOTAL_COUNT" property="followupTotalCount" />
+    <result column="SUCCESS_FOLLOWUP_COUNT" property="successFollowupCount" />
+    <result column="LOST_FOLLOWUP_COUNT" property="lostFollowupCount" />
+    <result column="REJECT_FOLLOWUP_COUNT" property="rejectFollowupCount" />
+    
+    <!-- <association property="patient" column="HIS_ID" javaType="patient" select="com.gb.chrom.core.mapper.PatientMapper.findPatientByHisId" /> -->
+  </resultMap>
+
+  <insert id="saveFollowup" parameterType="followup" flushCache="true" useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[ 
+      INSERT INTO FOLLOW_UP ( HIS_ID, SPECIMEN_NO, PATIENT_NAME, PATIENT_SEX, PATIENT_BIRTHDATE, FIRST_FOLLOWUP_DATE, LAST_FOLLOWUP_DATE, FOLLOWUP_TOTAL_COUNT, SUCCESS_FOLLOWUP_COUNT, LOST_FOLLOWUP_COUNT, REJECT_FOLLOWUP_COUNT )
+      VALUES ( #{hisId}, #{specimenNo}, #{patientName}, #{patientSex}, #{patientBirthdate}, #{firstFollowupDate}, #{lastFollowupDate}, #{followupTotalCount}, #{successFollowupCount}, #{lostFollowupCount}, #{rejectFollowupCount} )
+    ]]>
+  </insert>
+  
+  <select id="findFollowupById" parameterType="long" resultMap="FollowupResult">
+    <![CDATA[ SELECT ID, HIS_ID, SPECIMEN_NO, PATIENT_NAME, PATIENT_SEX, PATIENT_BIRTHDATE, FIRST_FOLLOWUP_DATE, LAST_FOLLOWUP_DATE, FOLLOWUP_TOTAL_COUNT, SUCCESS_FOLLOWUP_COUNT, LOST_FOLLOWUP_COUNT, REJECT_FOLLOWUP_COUNT FROM FOLLOW_UP WHERE ID = #{id} ]]>
+  </select>
+  
+  <select id="findFollowupBySpecimenNo" parameterType="string" resultMap="FollowupResult">
+    <![CDATA[ SELECT ID, HIS_ID, SPECIMEN_NO, FIRST_FOLLOWUP_DATE, LAST_FOLLOWUP_DATE, FOLLOWUP_TOTAL_COUNT, SUCCESS_FOLLOWUP_COUNT, LOST_FOLLOWUP_COUNT, REJECT_FOLLOWUP_COUNT FROM FOLLOW_UP WHERE SPECIMEN_NO = #{specimenNo} ]]>
+  </select>
+  
+  <select id="findFollowupForList" parameterType="followupQuery" resultMap="FollowupResult">
+    <![CDATA[ SELECT ID, HIS_ID, SPECIMEN_NO, PATIENT_NAME, PATIENT_SEX, PATIENT_BIRTHDATE, FIRST_FOLLOWUP_DATE, LAST_FOLLOWUP_DATE, FOLLOWUP_TOTAL_COUNT, SUCCESS_FOLLOWUP_COUNT, LOST_FOLLOWUP_COUNT, REJECT_FOLLOWUP_COUNT FROM FOLLOW_UP ]]>
+    <trim prefix="WHERE" prefixOverrides="AND |OR ">
+      <if test='keyword != null and keyword !=""'><![CDATA[ AND ( SPECIMENT_NO LIKE CONCAT(#{keyword}, '%') OR PATIENT_NAME LIKE CONCAT(#{keyword}, '%') ) ]]></if>
+      <if test="startDate != null"><![CDATA[ AND LAST_FOLLOWUP_DATE >= #{startDate} ]]></if>
+      <if test="endDate != null"><![CDATA[ AND LAST_FOLLOWUP_DATE <= #{endDate} ]]></if>
+      <if test="followupStatus != null">
+        <choose>
+          <when test="followupStatus == -1"><![CDATA[ AND REJECT_FOLLOWUP_COUNT > 0 ]]></when>
+          <when test="followupStatus == 0"><![CDATA[ AND LOST_FOLLOWUP_COUNT > 0 ]]></when>
+          <otherwise><![CDATA[ AND SUCCESS_FOLLOWUP_COUNT > 0 ]]></otherwise>
+        </choose>
+      </if>
+    </trim>
+    <![CDATA[ ORDER BY LAST_FOLLOWUP_DATE DESC ]]>
+  </select>
+  
+  <update id="updateFollowup" parameterType="followup" flushCache="true">
+    <![CDATA[ UPDATE FOLLOW_UP ]]>
+    <trim prefix="SET" suffixOverrides=",">
+      <if test="followupTotalCount != null"><![CDATA[ FOLLOWUP_TOTAL_COUNT = #{followupTotalCount}, ]]></if>
+      <if test="successFollowupCount != null"><![CDATA[ SUCCESS_FOLLOWUP_COUNT = #{successFollowupCount}, ]]></if>
+      <if test="lostFollowupCount != null"><![CDATA[ LOST_FOLLOWUP_COUNT = #{lostFollowupCount}, ]]></if>
+      <if test="rejectFollowupCount != null"><![CDATA[ REJECT_FOLLOWUP_COUNT = #{rejectFollowupCount}, ]]></if>
+    </trim>
+    <![CDATA[ WHERE ID = #{id} ]]>
+  </update>
+
+</mapper>

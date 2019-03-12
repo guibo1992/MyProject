@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gb.chrom.core.mapper.ReportConclusionMapper">
+
+  <resultMap type="reportConclusion" id="ReportConclusionResult">
+    <result column="ID" property="id" />
+    <result column="TYPE_ID" property="typeId" />
+    <result column="TITLE" property="title"/>
+    <result column="CONCLUSION" property="conclusion" />
+    <result column="GMT_MODIFIED" property="gmtModified" />
+    
+    <association property="type" javaType="specimenType" column="TYPE_ID" select="com.gb.chrom.core.mapper.SpecimenTypeMapper.findSpecimenTypeById" />
+  </resultMap>
+  
+  <insert id="saveReportConclusion" parameterType="reportConclusion" flushCache="true" useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[ INSERT INTO REPORT_CONCLUSION ( TYPE_ID, TITLE, CONCLUSION ) VALUES ( #{typeId}, #{title}, #{conclusion} ) ]]>
+  </insert>
+  
+  <delete id="deleteReportConclusionById" parameterType="long" flushCache="true">
+    <![CDATA[ DELETE FROM REPORT_CONCLUSION WHERE ID = #{id} ]]>
+  </delete>
+  
+  <update id="updateReportConclusion" parameterType="reportConclusion" flushCache="true">
+    <![CDATA[ UPDATE REPORT_CONCLUSION ]]>
+    <trim prefix="SET" suffixOverrides=",">
+      <if test="typeId != null"><![CDATA[ TYPE_ID = #{typeId}, ]]></if>
+      <if test="title != null"><![CDATA[ TITLE = #{title}, ]]></if>
+      <if test="conclusion != null"><![CDATA[ CONCLUSION = #{conclusion}, ]]></if>
+    </trim>
+    <![CDATA[ WHERE ID = #{id} ]]>
+  </update>
+
+  <select id="findReportConclusionById" parameterType="long" resultMap="ReportConclusionResult">
+    <![CDATA[ SELECT ID, TYPE_ID, TITLE, CONCLUSION FROM REPORT_CONCLUSION WHERE ID = #{id} ]]>
+  </select>
+  
+  <select id="findReportConclusionForList" parameterType="reportConclusionQuery" resultMap="ReportConclusionResult">
+    <![CDATA[ SELECT ID, TYPE_ID, TITLE, CONCLUSION, GMT_MODIFIED FROM REPORT_CONCLUSION ]]>
+    <trim prefix="WHERE" prefixOverrides="AND |OR ">
+	  <if test="typeId != null"><![CDATA[ AND TYPE_ID = #{typeId} ]]></if>
+      <if test='keyword != null and keyword !=""'><![CDATA[ AND TITLE LIKE CONCAT('%', #{keyword}, '%') ]]></if>
+    </trim>
+    <![CDATA[ ORDER BY ID DESC ]]>
+  </select>
+  
+</mapper>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gb.chrom.core.mapper.SpecimenClinicalInfoMapper">
+
+  <resultMap type="specimenClinicalInfo" id="ClinicalInfoTypeResult">
+    <result column="SPECIMEN_ID" property="specimenId" />
+    <result column="PATIENT_ID" property="patientId" />
+    <result column="CLINICAL_INFO" property="clinicalInfo" />
+    <result column="CLINICAL_REMARKS" property="clinicalRemarks" />
+    
+    
+  </resultMap>
+
+  <insert id="saveClinicalInfoList" parameterType="arrayList" flushCache="true">
+    <![CDATA[ INSERT INTO SPECIMEN_CLINICAL_INFO ( SPECIMEN_ID, PATIENT_ID, CLINICAL_INFO, CLINICAL_REMARKS ) VALUES ]]>
+    <foreach collection="list" index="i" item="c" separator=",">
+      <![CDATA[ ( #{c.specimenId}, #{c.patientId}, #{c.clinicalInfo}, #{c.clinicalRemarks} ) ]]>
+    </foreach>
+  </insert>
+
+  <delete id="deleteClinicalInfoBySpecimenId" parameterType="long" flushCache="true">
+    <![CDATA[ DELETE FROM SPECIMEN_CLINICAL_INFO WHERE SPECIMEN_ID = #{specimenId} ]]>
+  </delete>
+
+  <select id="findClinicalInfoForList" parameterType="long" resultMap="ClinicalInfoTypeResult">
+    <![CDATA[ SELECT PATIENT_ID, CLINICAL_INFO, CLINICAL_REMARKS FROM SPECIMEN_CLINICAL_INFO WHERE SPECIMEN_ID = #{specimenId} ]]>
+  </select>
+
+</mapper>

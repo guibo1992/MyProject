@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="false" scanPeriod="3" debug="false">
+  <property name="LOG_HOME" value="/chromsys" />
+
+  <!-- 控制台输出 -->
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!-- 生成错误日志/每天 -->
+  <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>ERROR</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${LOG_HOME}/%d{yyyy-MM-dd}-ERR.log</fileNamePattern>
+      <maxHistory>30</maxHistory>
+    </rollingPolicy>
+    <encoder>
+      <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{30} - %msg%n</pattern>
+      <charset>UTF-8</charset>
+    </encoder>
+
+    <!-- 超过50MB时，触发滚动策略 -->
+   	<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+       <maxFileSize>20MB</maxFileSize>
+    </triggeringPolicy>
+  </appender>
+
+
+  <!-- 按照每天生成正常日志文件 -->
+  <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>INFO</level>
+    </filter>
+    
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${LOG_HOME}/%d{yyyy-MM-dd}-INFO.log</fileNamePattern>
+      <maxHistory>30</maxHistory>
+    </rollingPolicy>
+    <encoder>
+      <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{20} - %msg%n</pattern>
+      <charset>UTF-8</charset>
+    </encoder>
+  </appender>
+
+  <!-- 按照每天生成日志文件 <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender"> <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"> 
+    <FileNamePattern>${LOG_HOME}/admin-%d{yyyy-MM-dd}.log</FileNamePattern> <MaxHistory>30</MaxHistory> </rollingPolicy> <encoder 
+    class="ch.qos.logback.classic.encoder.PatternLayoutEncoder"> <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern> 
+    </encoder> </appender> -->
+
+  <logger name="freemarker" level="INFO" />
+  <logger name="org.springframework" level="INFO" />
+  <logger name="org.apache.shiro" level="INFO" />
+
+  <root level="INFO">
+    <appender-ref ref="CONSOLE" />
+    <appender-ref ref="INFO_FILE" />
+    <appender-ref ref="ERROR_FILE" />
+  </root>
+</configuration> 

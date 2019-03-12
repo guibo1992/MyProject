@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gb.chrom.core.mapper.ConfigurationMapper">
+
+  <resultMap type="configuration" id="ConfigurationResult">
+    <id column="ID_CODE" property="idCode" />
+    <result column="HOSP_NAME" property="hospName" />
+    <result column="HOSP_ALIASE" property="hospAliase" />
+    <result column="HOSP_LOGO" property="hospLogo" />
+    <result column="SLIDE_PRINTER" property="slidePrinter" />
+    <result column="BARCODE_PRINTER" property="barcodePrinter" />
+    <result column="REPORT_PRINTER" property="reportPrinter" />
+    <result column="SMB_DOMAIN" property="smbDomain" />
+    <result column="NTLM_USERNAME" property="ntlmUsername" />
+    <result column="NTLM_PASSWORD" property="ntlmPassword" />
+    <result column="SHARE_SOURCE" property="shareSource" />
+  </resultMap>
+  
+  <select id="findConfiguration" resultMap="ConfigurationResult">
+    <![CDATA[ SELECT ID_CODE, HOSP_NAME, HOSP_ALIASE, HOSP_LOGO, SLIDE_PRINTER, BARCODE_PRINTER, REPORT_PRINTER, SMB_DOMAIN, NTLM_USERNAME, NTLM_PASSWORD, SHARE_SOURCE FROM SYS_CONFIG ]]>
+  </select>
+  
+  <delete id="deleteConfigurationByIdcode" parameterType="string" flushCache="true">
+    <![CDATA[ DELETE FROM SYS_CONFIG WHERE ID_CODE = #{idcode} ]]>
+  </delete>
+
+  <insert id="saveConfiguration" parameterType="configuration" flushCache="true" useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[
+      INSERT INTO SYS_CONFIG ( ID_CODE, HOSP_NAME, HOSP_ALIASE, HOSP_LOGO, SLIDE_PRINTER, BARCODE_PRINTER, REPORT_PRINTER, SMB_DOMAIN, NTLM_USERNAME, NTLM_PASSWORD, SHARE_SOURCE )
+      VALUES ( #{idCode}, #{hospName}, #{hospAliase}, #{hospLogo}, #{slidePrinter}, #{barcodePrinter}, #{reportPrinter}, #{smbDomain}, #{ntlmUsername}, #{ntlmPassword}, #{shareSource} )
+    ]]>
+  </insert>
+
+</mapper>

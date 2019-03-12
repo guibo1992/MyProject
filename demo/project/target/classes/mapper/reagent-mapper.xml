@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gb.chrom.core.mapper.ReagentMapper">
+
+  <resultMap type="reagent" id="ReagentResult">
+    <id column="ID" property="id" />
+    <result column="NAME" property="name" />
+    <result column="TYPE" property="type" />
+    <result column="SPEC" property="spec" />
+    <result column="QTY_UNIT" property="qtyUnit" />
+    <result column="STOCKS" property="stocks" />
+    <result column="WARN_STOCK" property="warnStock" />
+    <result column="STORE_CONDITION" property="storeCondition" />
+    <result column="REMARK" property="remark" />
+    <result column="LAST_PUT_IN_TIME" property="lastPutInTime" />
+    <result column="LAST_PUT_OUT_TIME" property="lastPutOutTime" />
+    <result column="GMT_CREATED" property="gmtCreated" />
+    <result column="GMT_MODIFIED" property="gmtModified" />
+  </resultMap>
+
+  <select id="findReagentById" parameterType="long" resultMap="ReagentResult">
+    <![CDATA[ SELECT ID, NAME, QTY_UNIT, TYPE, SPEC, STOCKS, WARN_STOCK, STORE_CONDITION, REMARK FROM REAGENT WHERE ID = #{id} ]]>
+  </select>
+  
+  <select id="findReagentForList" parameterType="reagentQuery" resultMap="ReagentResult">
+    <![CDATA[ SELECT ID, NAME, QTY_UNIT, TYPE, SPEC, STOCKS, WARN_STOCK, STORE_CONDITION, LAST_PUT_IN_TIME, LAST_PUT_OUT_TIME, GMT_CREATED FROM REAGENT ]]>
+    <trim prefix="WHERE" prefixOverrides="AND |OR ">
+      <if test='keyword != null and keyword !=""'><![CDATA[ AND NAME REGEXP #{keyword} ]]></if>
+    </trim>
+    <![CDATA[ ORDER BY GMT_CREATED DESC ]]>
+  </select>
+  
+  <update id="updateReagent" parameterType="reagent" flushCache="true">
+    <![CDATA[ UPDATE REAGENT ]]>
+    <trim prefix="SET" suffixOverrides=",">
+      <if test="name != null"><![CDATA[ NAME = #{name}, ]]></if>
+      <if test="type != null"><![CDATA[ TYPE = #{type}, ]]></if>
+      <if test="spec != null"><![CDATA[ SPEC = #{spec}, ]]></if>
+      <if test="qtyUnit != null"><![CDATA[ QTY_UNIT = #{qtyUnit}, ]]></if>
+      <if test="storeCondition != null"><![CDATA[ STORE_CONDITION = #{storeCondition}, ]]></if>
+      <if test="warnStock != null"><![CDATA[ WARN_STOCK = #{warnStock}, ]]></if>
+      <if test="stocks != null"><![CDATA[ STOCKS = #{stocks}, ]]></if>
+      <if test="lastPutInTime != null"><![CDATA[ LAST_PUT_IN_TIME = #{lastPutInTime}, ]]></if>
+      <if test="lastPutOutTime != null"><![CDATA[ LAST_PUT_OUT_TIME = #{lastPutOutTime}, ]]></if>
+      <if test="remark != null"><![CDATA[ REMARK = #{remark}, ]]></if>
+    </trim>
+    <![CDATA[ WHERE ID = #{id} ]]>
+  </update>
+  
+  <insert id="saveReagent" parameterType="reagent" useGeneratedKeys="true" keyProperty="id" flushCache="true">
+    <![CDATA[ 
+      INSERT INTO REAGENT ( NAME, QTY_UNIT, TYPE, SPEC, STORE_CONDITION, WARN_STOCK, STOCKS, REMARK ) 
+      VALUES ( #{name}, #{qtyUnit}, #{type}, #{spec}, #{storeCondition}, #{warnStock}, 0, #{remark} ) 
+    ]]>
+  </insert>
+  
+  <update id="reagentPutInStorage" parameterType="hashMap">
+    <![CDATA[ UPDATE REAGENT SET STOCKS = STOCKS + #{quantity}, LAST_PUT_IN_TIME = #{inTime} WHERE ID = #{id} AND STOCKS = #{stocks} ]]>
+  </update>
+  
+  <update id="reagentPutOutStorage" parameterType="hashMap">
+    <![CDATA[ UPDATE REAGENT SET STOCKS = STOCKS - #{quantity}, LAST_PUT_OUT_TIME = #{outTime} WHERE ID = #{id} AND STOCKS >= #{quantity} AND STOCKS = #{stocks} ]]>
+  </update>
+
+</mapper>

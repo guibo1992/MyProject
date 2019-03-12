@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gb.chrom.core.mapper.ReportMapper">
+
+  <resultMap type="analysisReport" id="AnalysisReportResult">
+    <result column="ID" property="id" />
+    <result column="NAME" property="name" />
+    <result column="TEMPLATE_ID" property="templateId" />
+    <result column="TYPE_ID" property="typeId" />
+    <result column="HIS_ID" property="hisId" />
+    <result column="PATIENT_ID" property="patientId" />
+    <result column="SPECIMEN_NO" property="specimenNo" />
+    <result column="SPECIMEN_DATE" property="specimenDate" />
+    <result column="INSPECTION_TYPE" property="inspectionType" />
+    <result column="PATIENT_NAME" property="patientName" />
+    <result column="PATIENT_SEX" property="patientSex" />
+    <result column="PATIENT_AGE" property="patientAge" />
+    <result column="INSPECTION_PHYSICIAN" property="inspectionPhysician" />
+    <result column="INSPECTION_DEPT" property="inspectionDept" />
+    <result column="CLINICAL_INFO" property="clinicalInfo" />
+    <result column="DETECTION_METHOD" property="detectionMethod" />
+    <result column="ANALYSIS_RESULT" property="analysisResult" />
+    <result column="ANALYSIS_MET_IMG" property="analysisMetImg" />
+    <result column="ANALYSIS_KAR_IMG" property="analysisKarImg" />
+    <result column="RESULT_INTERPRETATION" property="resultInterpretation" />
+    <result column="REPORT_CONCLUSION" property="reportConclusion" />
+    <result column="REMARKS" property="remarks" />
+    <result column="SUBMITTER_ID" property="submitterId" />
+    <result column="LABORATORIAN" property="laboratorian" />
+    <result column="MASTER_AUDITOR" property="masterAuditor" />
+    <result column="DEPUTY_AUDITOR" property="deputyAuditor" />
+    <result column="REPORT_DATE" property="reportDate" />
+    <result column="AUDIT_STATUS" property="auditStatus" />
+    <result column="STATUS" property="status" />
+    
+    <association property="template" javaType="reportTemplate" column="TEMPLATE_ID" select="com.gb.chrom.core.mapper.ReportTemplateMapper.findReportTemplateById" />
+  </resultMap>
+
+  <insert id="saveAnalysisReport" parameterType="analysisReport" flushCache="true" useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[ 
+      INSERT INTO ANALYSIS_REPORT (
+        NAME, TEMPLATE_ID, TYPE_ID, HIS_ID, PATIENT_ID, SPECIMEN_NO, SPECIMEN_DATE, INSPECTION_TYPE, PATIENT_NAME, PATIENT_SEX, PATIENT_AGE,
+        INSPECTION_PHYSICIAN, INSPECTION_DEPT, CLINICAL_INFO, DETECTION_METHOD, ANALYSIS_RESULT, ANALYSIS_MET_IMG, ANALYSIS_KAR_IMG,
+        RESULT_INTERPRETATION, REPORT_CONCLUSION, REMARKS, SUBMITTER_ID, LABORATORIAN, MASTER_AUDITOR, DEPUTY_AUDITOR, REPORT_DATE, AUDIT_STATUS, STATUS
+      ) VALUES ( 
+        #{name}, #{templateId}, #{typeId}, #{hisId}, #{patientId}, #{specimenNo}, #{specimenDate}, #{inspectionType}, #{patientName}, #{patientSex}, #{patientAge},
+        #{inspectionPhysician}, #{inspectionDept}, #{clinicalInfo}, #{detectionMethod}, #{analysisResult}, #{analysisMetImg}, #{analysisKarImg},
+        #{resultInterpretation}, #{reportConclusion}, #{remarks}, #{submitterId}, #{laboratorian}, #{masterAuditor}, #{deputyAuditor}, #{reportDate}, #{auditStatus}, 1
+      )
+    ]]>
+  </insert>
+  
+  <update id="updateAnalysisReport" parameterType="analysisReport" flushCache="true">
+    <![CDATA[ UPDATE ANALYSIS_REPORT ]]>
+    <trim prefix="SET" suffixOverrides=",">
+      <if test="name != null"><![CDATA[ NAME = #{name}, ]]></if>
+      <if test="templateId != null"><![CDATA[ TEMPLATE_ID = #{templateId}, ]]></if>
+      <if test="clinicalInfo != null"><![CDATA[ CLINICAL_INFO = #{clinicalInfo}, ]]></if>
+      <if test="detectionMethod != null"><![CDATA[ DETECTION_METHOD = #{detectionMethod}, ]]></if>
+      <if test="resultInterpretation != null"><![CDATA[ RESULT_INTERPRETATION = #{resultInterpretation}, ]]></if>
+      <if test="reportConclusion != null"><![CDATA[ REPORT_CONCLUSION = #{reportConclusion}, ]]></if>
+      <if test="remarks != null"><![CDATA[ REMARKS = #{remarks}, ]]></if>
+      <if test="masterAuditor != null"><![CDATA[ MASTER_AUDITOR = #{masterAuditor}, ]]></if>
+      <if test="deputyAuditor != null"><![CDATA[ DEPUTY_AUDITOR = #{deputyAuditor}, ]]></if>
+      <if test="auditStatus != null"><![CDATA[ AUDIT_STATUS = #{auditStatus}, ]]></if>
+      <if test="status != null"><![CDATA[ STATUS = #{status} ]]></if>
+    </trim>
+    <![CDATA[ WHERE ID = #{id} ]]>
+  </update>
+
+  <select id="findAnalysisReportById" parameterType="long" resultMap="AnalysisReportResult">
+    <![CDATA[ 
+      SELECT ID, NAME, TEMPLATE_ID, TYPE_ID, HIS_ID, PATIENT_ID, SPECIMEN_NO, SPECIMEN_DATE, INSPECTION_TYPE, PATIENT_NAME, PATIENT_SEX, PATIENT_AGE,
+      INSPECTION_PHYSICIAN, INSPECTION_DEPT, CLINICAL_INFO, DETECTION_METHOD, ANALYSIS_RESULT, ANALYSIS_MET_IMG, ANALYSIS_KAR_IMG,
+      RESULT_INTERPRETATION, REPORT_CONCLUSION, REMARKS, SUBMITTER_ID, LABORATORIAN, MASTER_AUDITOR, DEPUTY_AUDITOR, REPORT_DATE, AUDIT_STATUS
+      FROM ANALYSIS_REPORT WHERE ID = #{id}
+    ]]>
+  </select>
+  
+  <select id="findAnalysisReportForList" parameterType="analysisReportQuery" resultMap="AnalysisReportResult">
+    <![CDATA[ 
+      SELECT ID, HIS_ID, NAME, SPECIMEN_NO, SPECIMEN_DATE, INSPECTION_TYPE, PATIENT_NAME, PATIENT_SEX, PATIENT_AGE, INSPECTION_PHYSICIAN,
+      INSPECTION_DEPT, LABORATORIAN, MASTER_AUDITOR, DEPUTY_AUDITOR, REPORT_DATE, AUDIT_STATUS, STATUS FROM ANALYSIS_REPORT
+    ]]>
+    <trim prefix="WHERE" prefixOverrides="AND |OR ">
+	  <if test="typeId != null"><![CDATA[ AND TYPE_ID = #{typeId} ]]></if>
+      <if test="startDate != null"><![CDATA[ AND REPORT_DATE >= #{startDate} ]]></if>
+      <if test="endDate != null"><![CDATA[ AND REPORT_DATE <= #{endDate} ]]></if>
+      <if test="auditorId != null"><![CDATA[ AND ( MASTER_AUDITOR_ID = #{auditorId} OR DEPUTY_AUDITOR_ID = #{auditorId} ) ]]></if>
+      <if test='auditStatus != null and auditStatus != ""'><![CDATA[ AND AUDIT_STATUS = #{auditStatus} ]]></if>
+	  <if test="status != null"><![CDATA[ AND STATUS = #{status} ]]></if>
+    </trim>
+    <![CDATA[ ORDER BY REPORT_DATE DESC ]]>
+  </select>
+  
+</mapper>

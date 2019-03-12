@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gb.chrom.core.mapper.ClinicalInfoMapper">
+  <resultMap type="clinicalInfo" id="ClinicalInfoResult">
+  	<id column="INFO_ID" property="infoId" />
+  	<id column="INFORMATION" property="information" />
+  	<id column="TYPE_HEAD" property="typeHead" />
+  </resultMap>
+  
+  <select id="findClinicalInfo" resultMap="ClinicalInfoResult">
+  	<![CDATA[SELECT INFO_ID INFORMATION FROM clinical_info WHERE TYPE_HEAD = #{typeHead}]]>
+  </select>
+</mapper>

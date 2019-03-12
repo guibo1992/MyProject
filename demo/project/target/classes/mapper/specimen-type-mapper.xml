@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gb.chrom.core.mapper.SpecimenTypeMapper">
+
+  <resultMap type="specimenType" id="SpecimenTypeResult">
+    <result column="ID" property="id" />
+    <result column="TYPE_HEAD" property="typeHead" />
+    <result column="NAME" property="name" />
+    <result column="CASE_TEMPLATE" property="caseTemplate" />
+    <result column="REMARK" property="remark" />
+    <result column="STATUS" property="status" />
+    <result column="GMT_CREATED" property="gmtCreated" />
+    <result column="GMT_MODIFIED" property="gmtModified" />
+  </resultMap>
+
+  <insert id="saveSpecimenType" parameterType="specimenType" flushCache="true" useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[ 
+      INSERT INTO SPECIMEN_TYPE ( TYPE_HEAD, NAME, CASE_TEMPLATE, REMARK, STATUS ) VALUES ( #{typeHead}, #{name}, #{caseTemplate}, #{remark}, 1 ) 
+    ]]>
+  </insert>
+
+  <update id="updateSpecimenType" parameterType="specimenType" flushCache="true">
+    <![CDATA[ UPDATE SPECIMEN_TYPE ]]>
+    <trim prefix="SET" suffixOverrides=",">
+      <if test="typeHead != null"><![CDATA[ TYPE_HEAD = #{typeHead}, ]]></if>
+      <if test="name != null"><![CDATA[ NAME = #{name}, ]]></if>
+      <if test="caseTemplate != null"><![CDATA[ CASE_TEMPLATE = #{caseTemplate}, ]]></if>
+      <if test="remark != null"><![CDATA[ REMARK = #{remark}, ]]></if>
+      <if test="status != null"><![CDATA[ STATUS = #{status}, ]]></if>
+    </trim>
+    <![CDATA[ WHERE ID = #{id} ]]>
+  </update>
+
+  <select id="findSpecimenTypeById" parameterType="int" resultMap="SpecimenTypeResult">
+    <![CDATA[ SELECT ID, TYPE_HEAD, NAME, CASE_TEMPLATE, REMARK, STATUS FROM SPECIMEN_TYPE WHERE ID = #{id} ]]>
+  </select>
+
+  <select id="findSpecimenTypeForList" parameterType="specimenTypeQuery" resultMap="SpecimenTypeResult">
+    <![CDATA[ SELECT ID, TYPE_HEAD, NAME, CASE_TEMPLATE, REMARK, STATUS, GMT_CREATED, GMT_MODIFIED FROM SPECIMEN_TYPE ]]>
+    <trim prefix="WHERE" prefixOverrides="AND |OR ">
+      <if test="status != null"><![CDATA[ AND STATUS = #{status} ]]></if>
+    </trim>
+    <![CDATA[ ORDER BY TYPE_HEAD ]]>
+  </select>
+
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gb.chrom.core.mapper.AnalysisWorkStatisticsMapper">
+
+  <resultMap type="analysisWorkStatistics" id="WorkStatisticsResult">
+    <id column="USER_ID" property="userId" />
+    <id column="STATIS_YEAR" property="statisYear" />
+    <id column="STATIS_QUARTER" property="statisQuarter" />
+    <id column="STATIS_MONTH" property="statisMonth" />
+    <result column="ANALYSIS_SPECIMEN_COUNT" property="analysisSpecimenCount" />
+    <result column="REPORTED_EFFICIENCY" property="reportedEfficiency" />
+    <result column="REPORTED_COUNT" property="reportedCount" />
+    <result column="REPORT_REJECT_COUNT" property="reportRejectCount"/>
+  </resultMap>
+
+  <select id="findSpecimenAnalysisCountForMap" parameterType="statisticsQuery" resultMap="WorkStatisticsResult">
+    <![CDATA[ SELECT LABORATORIAN_ID AS USER_ID, COUNT(1) AS ANALYSIS_SPECIMEN_COUNT FROM SPECIMEN ]]>
+    <trim prefix="WHERE" prefixOverrides="AND |OR ">
+      <if test="startDate != null"><![CDATA[ AND ANALYSIS_COMPLETED_TIME >= #{startDate} ]]></if>
+      <if test="endDate != null"><![CDATA[ AND ANALYSIS_COMPLETED_TIME < #{endDate} ]]></if>
+      <![CDATA[ AND ANALYSIS_STATUS = 1 ]]>
+    </trim>
+    <![CDATA[ GROUP BY LABORATORIAN_ID ]]>
+  </select>
+  
+  <select id="findReportCountForMap" parameterType="statisticsQuery" resultMap="WorkStatisticsResult">
+    <![CDATA[ 
+      SELECT r.SUBMITTER_ID AS USER_ID, COUNT(r.ID) AS REPORTED_COUNT, REPORT_REJECT_COUNT FROM ANALYSIS_REPORT r
+      LEFT JOIN (SELECT REPORT_ID, COUNT(1) AS REPORT_REJECT_COUNT FROM ANALYSIS_REPORT_AUDIT  WHERE  AUDIT_STATUS = 0 GROUP BY REPORT_ID ) ra  ON ra.REPORT_ID = r.ID
+    ]]>
+    <trim prefix="WHERE" prefixOverrides="AND |OR ">
+      <if test="startDate != null"><![CDATA[ AND r.REPORT_DATE >= #{startDate} ]]></if>
+      <if test="endDate != null"><![CDATA[ AND r.REPORT_DATE < #{endDate} ]]></if>
+      <![CDATA[ AND ( r.AUDIT_STATUS = 'AUDIT_PASSED' OR  r.AUDIT_STATUS = 'AUDIT_REJECT' ) ]]>
+    </trim>
+    <![CDATA[ GROUP BY r.SUBMITTER_ID ]]>
+  </select>
+  
+  
+  <select id="findSpecimenAnalysisCountForUser" parameterType="statisticsQuery" resultType="hashMap">
+    <![CDATA[ SELECT u.ID, u.NAME as name, COUNT(s.ID) as count FROM USER u LEFT JOIN SPECIMEN s ON s.LABORATORIAN_ID = u.ID ]]>
+    <trim prefix="WHERE" prefixOverrides="AND |OR ">
+      <if test="startDate != null"><![CDATA[ AND s.GMT_CREATE >= #{startDate} ]]></if>
+      <if test="endDate != null"><![CDATA[ AND s.GMT_CREATE < DATE_ADD(#{endDate}, INTERVAL 1 DAY) ]]></if>
+      <![CDATA[ AND u.TYPE = 7 ]]>
+    </trim>
+    <![CDATA[ GROUP BY u.ID ]]>
+  </select>
+
+ 
+  
+</mapper>

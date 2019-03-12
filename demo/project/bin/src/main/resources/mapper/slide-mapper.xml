@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gb.chrom.core.mapper.SlideTemplateMapper">
+
+  <resultMap type="slideTemplate" id="SlideTemplateResult">
+    <id column="ID" property="id" />
+    <result column="NAME" property="name" />
+    <result column="WIDTH" property="width" />
+    <result column="HEIGHT" property="height" />
+    <result column="HTML_CONTENT" property="htmlContent" />
+    <result column="STATUS" property="status" />
+    <result column="GMT_MODIFIED" property="gmtModified" />
+  </resultMap>
+
+  <select id="findSlideTemplate" resultMap="SlideTemplateResult">
+    <![CDATA[ SELECT ID, NAME, WIDTH, HEIGHT, HTML_CONTENT FROM SLIDE_TEMPLATE ]]>
+  </select>
+
+  <update id="updateSlideTemplate" parameterType="slideTemplate" flushCache="true">
+    <![CDATA[ UPDATE SLIDE_TEMPLATE ]]>
+    <trim prefix="SET" suffixOverrides=",">
+      <if test="name != null"><![CDATA[ NAME = #{name}, ]]></if>
+      <if test="width != null"><![CDATA[ WIDTH = #{width}, ]]></if>
+      <if test="height != null"><![CDATA[ HEIGHT = #{height}, ]]></if>
+      <if test="htmlContent != null"><![CDATA[ HTML_CONTENT = #{htmlContent}, ]]></if>
+      <if test="status != null"><![CDATA[ STATUS = #{status}, ]]></if>
+    </trim>
+    <![CDATA[ WHERE ID = #{id} ]]>
+  </update>
+
+  <insert id="saveSlideTemplate" parameterType="slideTemplate" useGeneratedKeys="true" keyProperty="id" flushCache="true">
+    <![CDATA[ INSERT INTO SLIDE_TEMPLATE ( NAME, WIDTH, HEIGHT, HTML_CONTENT, STATUS ) VALUES ( #{name}, #{width}, #{height}, #{htmlContent}, 1 ) ]]>
+  </insert>
+
+</mapper>

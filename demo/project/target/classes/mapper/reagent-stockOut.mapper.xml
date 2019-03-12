@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gb.chrom.core.mapper.ReagentStockOutMapper">
+
+  <resultMap type="reagentStockOut" id="ReagentStockOutResult">
+    <id column="ID" property="id"/>
+    <result column="OUT_TIME" property="outTime" />
+    <result column="BATCH_NO" property="batchNo" />
+    <result column="REAGENT_ID" property="reagentId" />
+    <result column="REAGENT" property="reagent"/>
+    <result column="QUANTITY" property="quantity" />
+    <result column="REMARK" property="remark" />
+    <result column="OPERATOR_ID" property="operatorId" />
+    <result column="OPERATOR" property="operator"/>
+  </resultMap>
+
+  <select id="findReagentStockOutForList" parameterType="reagentStockQuery" resultMap="ReagentStockOutResult">
+    <![CDATA[ SELECT ID, OUT_TIME, BATCH_NO, REAGENT, QUANTITY, REMARK, OPERATOR FROM REAGENT_STOCK_OUT ]]>
+    <trim prefix="WHERE" prefixOverrides="AND |OR ">
+      <if test='keyword != null and keyword !=""'><![CDATA[ AND ( REAGENT REGEXP #{keyword} OR BATCH_NO LIKE CONCAT(#{keyword}, '%') ) ]]></if>
+      <if test="startDate != null"><![CDATA[ AND OUT_TIME >= #{startDate} ]]></if>
+      <if test="endDate != null"><![CDATA[ AND OUT_TIME < DATE_ADD(#{endDate}, INTERVAL 1 DAY) ]]></if>
+    </trim>
+    <![CDATA[ ORDER BY OUT_TIME DESC ]]>
+  </select>
+  
+  <insert id="saveReagentStockOut" parameterType="reagentStockOut" useGeneratedKeys="true" keyProperty="id" flushCache="true">
+    <![CDATA[ 
+      INSERT INTO REAGENT_STOCK_OUT ( OUT_TIME, BATCH_NO, REAGENT_ID, REAGENT, QUANTITY, REMARK, OPERATOR_ID, OPERATOR ) 
+      VALUES ( #{outTime}, #{batchNo}, #{reagentId}, #{reagent}, #{quantity}, #{remark}, #{operatorId}, #{operator} ) 
+    ]]>
+  </insert>
+
+</mapper>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gb.chrom.core.mapper.UserMapper">
+
+  <resultMap type="user" id="UserResult">
+    <id column="ID" property="id" />
+    <result column="USERNAME" property="username" />
+    <result column="NAME" property="name" />
+    <result column="TYPE" property="type" />
+    <result column="DEPT" property="dept" />
+    <result column="PHONE" property="phone" />
+    <result column="SIGN_IMG" property="signImg" />
+    <result column="PASSWORD" property="password" />
+    <result column="SALT" property="salt" />
+    <result column="STATUS" property="status" />
+    <result column="LOGIN_TIME" property="loginTime" />
+    <result column="GMT_MODIFIED" property="gmtModified" />
+  </resultMap>
+
+  <select id="findUserById" parameterType="long" resultMap="UserResult">
+    <![CDATA[ SELECT ID, USERNAME, TYPE, NAME, SIGN_IMG, DEPT, PHONE, PASSWORD, SALT, STATUS, LOGIN_TIME, GMT_MODIFIED FROM USER WHERE ID = #{id} ]]>
+  </select>
+
+  <select id="findUserByUsername" parameterType="string" resultMap="UserResult">
+    <![CDATA[ SELECT ID, USERNAME, TYPE, NAME, SIGN_IMG, DEPT, PHONE, PASSWORD, SALT, STATUS, LOGIN_TIME, GMT_MODIFIED FROM USER WHERE USERNAME = #{username} ]]>
+  </select>
+  
+  <select id="findUserForList" parameterType="userQuery" resultMap="UserResult">
+    <![CDATA[ SELECT ID, USERNAME, TYPE, NAME, SIGN_IMG, DEPT, PHONE, STATUS, LOGIN_TIME, GMT_MODIFIED FROM USER ]]>
+    <trim prefix="WHERE" prefixOverrides="AND |OR ">
+      <if test="status != null"><![CDATA[ AND STATUS = #{status} ]]></if>
+      <if test="type != null"><![CDATA[ AND TYPE = #{type} ]]></if>
+      <if test='keyword != null and keyword !=""'><![CDATA[ AND ( USERNAME REGEXP #{keyword} OR NAME REGEXP #{keyword} ) ]]></if>
+    </trim>
+    <![CDATA[ GROUP BY TYPE DESC, ID ]]>
+  </select>
+  
+  <select id="findUserTotalCount" resultType="int">
+    <![CDATA[ SELECT COUNT(1) FROM USER ]]>
+  </select>
+  
+  <update id="updateUser" parameterType="user" flushCache="true">
+    <![CDATA[ UPDATE USER ]]>
+    <trim prefix="SET" suffixOverrides=",">
+      <if test="username != null"><![CDATA[ USERNAME = #{username}, ]]></if>
+      <if test="password != null"><![CDATA[ PASSWORD = #{password}, ]]></if>
+      <if test="type != null"><![CDATA[ TYPE = #{type}, ]]></if>
+      <if test="name != null"><![CDATA[ NAME = #{name}, ]]></if>
+      <if test="signImg != null"><![CDATA[ SIGN_IMG = #{signImg}, ]]></if>
+      <if test="dept != null"><![CDATA[ DEPT = #{dept}, ]]></if>
+      <if test="phone != null"><![CDATA[ PHONE = #{phone}, ]]></if>
+      <if test="loginTime != null"><![CDATA[ LOGIN_TIME = #{loginTime}, ]]></if>
+      <if test="salt != null"><![CDATA[ SALT = #{salt}, ]]></if>
+      <if test="status != null"><![CDATA[ STATUS = #{status}, ]]></if>
+    </trim>
+    <![CDATA[ WHERE ID = #{id} ]]>
+  </update>
+  
+  <insert id="saveUser" parameterType="user" useGeneratedKeys="true" keyProperty="id" flushCache="true">
+    <![CDATA[ 
+      INSERT INTO USER ( USERNAME, TYPE, NAME, SIGN_IMG, DEPT, PHONE, PASSWORD, SALT, STATUS ) VALUES ( #{username}, #{type}, #{name}, #{signImg}, #{dept}, #{phone}, #{password}, #{salt}, 1 ) 
+    ]]>
+  </insert>
+
+</mapper>

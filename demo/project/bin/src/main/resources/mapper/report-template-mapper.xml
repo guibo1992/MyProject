@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gb.chrom.core.mapper.ReportTemplateMapper">
+ 
+  <resultMap type="reportTemplate" id="ReportTemplateResult">
+    <result column="ID" property="id" />
+    <result column="TYPE_ID" property="typeId" />
+    <result column="NAME" property="name" />
+    <result column="HIDE_DETECTION_METHOD" property="hideDetectionMethod" />
+    <result column="DEF_DETECTION_METHOD" property="defaultDetectionMethod" />
+    <result column="HIDE_RESULT_MET_IMG" property="hideResultMetImg" />
+    <result column="HIDE_RESULT_SEX" property="hideResultSex" />
+    <result column="HIDE_REMARKS" property="hideRemarks" />
+    <result column="DEF_REMARKS" property="defaultRemarks" />
+    <result column="MASTER_AUDITOR_ID" property="masterAuditorId" />
+    <result column="DEPUTY_AUDITOR_ID" property="deputyAuditorId" />
+    <result column="STATUS" property="status" />
+    <result column="GMT_MODIFIED" property="gmtModified" />
+    
+    <association property="type" javaType="specimenType" column="TYPE_ID" select="com.gb.chrom.core.mapper.SpecimenTypeMapper.findSpecimenTypeById" />
+  </resultMap>
+  
+  <insert id="saveReportTemplate" parameterType="reportTemplate" flushCache="true" useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[ 
+      INSERT INTO REPORT_TEMPLATE ( 
+        TYPE_ID, NAME, HIDE_DETECTION_METHOD, DEF_DETECTION_METHOD, HIDE_RESULT_MET_IMG, HIDE_RESULT_SEX, HIDE_REMARKS, DEF_REMARKS, MASTER_AUDITOR_ID, DEPUTY_AUDITOR_ID, STATUS
+      ) VALUES ( 
+        #{typeId}, #{name}, #{hideDetectionMethod}, #{defaultDetectionMethod}, #{hideResultMetImg}, #{hideResultSex}, #{hideRemarks}, #{defaultRemarks}, #{masterAuditorId}, #{deputyAuditorId}, 1
+      )
+    ]]>
+  </insert>
+  
+  <update id="updateReportTemplate" parameterType="reportTemplate" flushCache="true">
+    <![CDATA[ UPDATE REPORT_TEMPLATE ]]>
+    <trim prefix="SET" suffixOverrides=",">
+      <if test="typeId != null"><![CDATA[ TYPE_ID = #{typeId}, ]]></if>
+      <if test="name != null"><![CDATA[ NAME = #{name}, ]]></if>
+      <if test="hideDetectionMethod != null"><![CDATA[ HIDE_DETECTION_METHOD = #{hideDetectionMethod}, ]]></if>
+      <if test="defaultDetectionMethod != null"><![CDATA[ DEF_DETECTION_METHOD = #{defaultDetectionMethod}, ]]></if>
+      <if test="hideResultMetImg != null"><![CDATA[ HIDE_RESULT_MET_IMG = #{hideResultMetImg}, ]]></if>
+      <if test="hideResultSex != null"><![CDATA[ HIDE_RESULT_SEX = #{hideResultSex}, ]]></if>
+      <if test="hideRemarks != null"><![CDATA[ HIDE_REMARKS = #{hideRemarks}, ]]></if>
+      <if test="defaultRemarks != null"><![CDATA[ DEF_REMARKS = #{defaultRemarks}, ]]></if>
+      <if test="masterAuditorId != null"><![CDATA[ MASTER_AUDITOR_ID = #{masterAuditorId}, ]]></if>
+      <if test="deputyAuditorId != null"><![CDATA[ DEPUTY_AUDITOR_ID = #{deputyAuditorId}, ]]></if>
+      <if test="status != null"><![CDATA[ STATUS = #{status}, ]]></if>
+    </trim>
+    <![CDATA[ WHERE ID = #{id} ]]>
+  </update>
+
+  <select id="findReportTemplateById" parameterType="long" resultMap="ReportTemplateResult">
+    <![CDATA[ 
+      SELECT ID, TYPE_ID, NAME, HIDE_DETECTION_METHOD, DEF_DETECTION_METHOD, HIDE_RESULT_MET_IMG, HIDE_RESULT_SEX, HIDE_REMARKS, DEF_REMARKS,
+      MASTER_AUDITOR_ID, DEPUTY_AUDITOR_ID FROM REPORT_TEMPLATE WHERE ID = #{id}
+    ]]>
+  </select>
+  
+  <select id="findReportTemplateForList" parameterType="reportTemplateQuery" resultMap="ReportTemplateResult">
+    <![CDATA[ SELECT ID, TYPE_ID, NAME, GMT_MODIFIED, STATUS FROM REPORT_TEMPLATE ]]>
+    <trim prefix="WHERE" prefixOverrides="AND |OR ">
+	  <if test="typeId != null"><![CDATA[ AND TYPE_ID = #{typeId} ]]></if>
+      <if test='keyword != null and keyword !=""'><![CDATA[ AND NAME LIKE CONCAT('%', #{keyword}, '%') ]]></if>
+	  <if test="status != null"><![CDATA[ AND STATUS = #{status} ]]></if>
+    </trim>
+    <![CDATA[ ORDER BY ID DESC ]]>
+  </select>
+  
+  
+</mapper>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gb.chrom.core.mapper.MessageAttachmentMapper">
+
+  <resultMap type="messageAttachment" id="MessageAttachmentResult">
+    <result column="MESSAGE_ID" property="messageId" />
+    <result column="NAME" property="name" />
+    <result column="FILE" property="file" />
+    <result column="TYPE" property="type" />
+    <result column="FILESIZE" property="filesize" />
+  </resultMap>
+
+  <insert id="saveMessageAttachmentList" parameterType="arrayList" flushCache="true">
+    <![CDATA[ INSERT INTO MESSAGE_ATTACHMENT ( MESSAGE_ID, NAME, FILE, TYPE, FILESIZE ) VALUES ]]>
+    <foreach collection="list" index="i" item="a" separator=",">
+      <![CDATA[ ( #{a.messageId}, #{a.name}, #{a.file}, #{a.type}, #{a.filesize} ) ]]>
+    </foreach>
+  </insert>
+
+  <delete id="deleteMessageAttachmentsByMeeageId">
+    <![CDATA[ DELETE FROM MESSAGE_ATTACHMENT WHERE MESSAGE_ID = #{messageId} ]]>
+  </delete>
+
+  <select id="findMessageAttachmentByMessageId" parameterType="long" resultMap="MessageAttachmentResult">
+    <![CDATA[ SELECT NAME, FILE, TYPE, FILESIZE FROM MESSAGE_ATTACHMENT WHERE MESSAGE_ID = #{messageId} ]]>
+  </select>
+
+</mapper>

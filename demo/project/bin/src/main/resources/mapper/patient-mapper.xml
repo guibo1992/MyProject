@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gb.chrom.core.mapper.PatientMapper">
+
+  <resultMap type="patient" id="PatientResult">
+    <result column="ID" property="id" />
+    <result column="HIS_ID" property="hisId" />
+    <result column="NAME" property="name" />
+    <result column="SEX" property="sex" />
+    <result column="IDCARD" property="idcard" />
+    <result column="BIRTHDATE" property="birthdate" />
+    <result column="PHONE" property="phone" />
+    <result column="EMAIL" property="email" />
+    <result column="DOCTOR" property="doctor" />
+  </resultMap>
+
+  <insert id="savePatient" parameterType="patient" flushCache="true" useGeneratedKeys="true" keyProperty="id" keyColumn="ID">
+    <![CDATA[ 
+      INSERT INTO PATIENT ( HIS_ID, NAME, SEX, IDCARD, BIRTHDATE, PHONE, EMAIL, DOCTOR ) VALUES ( #{hisId}, #{name}, #{sex}, #{idcard}, #{birthdate}, #{phone}, #{email}, #{doctor} )
+    ]]>
+  </insert>
+
+  <update id="updatePatient" parameterType="patient" flushCache="true">
+    <![CDATA[ UPDATE PATIENT ]]>
+    <trim prefix="SET" suffixOverrides=",">
+      <if test="hisId != null"><![CDATA[ HIS_ID = #{hisId}, ]]></if>
+      <if test="name != null"><![CDATA[ NAME = #{name}, ]]></if>
+      <if test="sex != null"><![CDATA[ SEX = #{sex}, ]]></if>
+      <if test="idcard != null"><![CDATA[ IDCARD = #{idcard}, ]]></if>
+      <if test="birthdate != null"><![CDATA[ BIRTHDATE = #{birthdate}, ]]></if>
+      <if test="phone != null"><![CDATA[ PHONE = #{phone}, ]]></if>
+      <if test="email != null"><![CDATA[ EMAIL = #{email}, ]]></if>
+      <if test="doctor != null"><![CDATA[ DOCTOR = #{doctor}, ]]></if>
+    </trim>
+    <![CDATA[ WHERE ID = #{id} ]]>
+  </update>
+
+  <select id="findPatientById" parameterType="string" resultMap="PatientResult">
+    <![CDATA[ SELECT HIS_ID, NAME, SEX, IDCARD, BIRTHDATE, PHONE, EMAIL, DOCTOR FROM PATIENT WHERE ID = #{id} ]]>
+  </select>
+
+  <select id="findPatientByHisId" parameterType="string" resultMap="PatientResult">
+    <![CDATA[ SELECT ID, HIS_ID, NAME, SEX, IDCARD, BIRTHDATE, PHONE, EMAIL, DOCTOR FROM PATIENT WHERE HIS_ID = #{hisId} ]]>
+  </select>
+
+</mapper>

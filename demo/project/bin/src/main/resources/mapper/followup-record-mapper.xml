@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gb.chrom.core.mapper.FollowupRecordMapper">
+
+  <resultMap type="followupRecord" id="FollowupRecordResult">
+    <id column="ID" property="id"/>
+    <result column="SPECIMEN_NO" property="specimenNo" />
+    <result column="HIS_ID" property="hisId" />
+    <result column="SUBJECT" property="subject" />
+    <result column="FOLLOWUP_DATE" property="followupDate" />
+    <result column="FOLLOWUP_CONTENT" property="followupContent" />
+    <result column="FOLLOWUPER" property="followuper" />
+    <result column="FOLLOWUP_STATUS" property="followupStatus" />
+    
+    <association property="patient" column="HIS_ID" javaType="patient" select="com.gb.chrom.core.mapper.PatientMapper.findPatientByHisId" />
+  </resultMap>
+
+  <insert id="saveFollowupRecord" parameterType="followupRecord" flushCache="true" useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[ 
+      INSERT INTO FOLLOW_UP_RECORD ( SPECIMEN_NO, HIS_ID, SUBJECT, FOLLOWUP_DATE, FOLLOWUP_CONTENT, FOLLOWUP_STATUS, FOLLOWUPER )
+      VALUES ( #{specimenNo}, #{hisId}, #{subject}, #{followupDate}, #{followupContent}, #{followupStatus}, #{followuper} )
+    ]]>
+  </insert>
+  
+  <update id="updateFollowupRecord" parameterType="followupRecord" flushCache="true">
+    <![CDATA[ UPDATE FOLLOW_UP_RECORD ]]>
+    <trim prefix="SET" suffixOverrides=",">
+      <if test="subject != null"><![CDATA[ SUBJECT = #{subject}, ]]></if>
+      <if test="followupDate != null"><![CDATA[ FOLLOWUP_DATE = #{followupDate}, ]]></if>
+      <if test="followupContent != null"><![CDATA[ FOLLOWUP_CONTENT = #{followupContent}, ]]></if>
+      <if test="followupStatus != null"><![CDATA[ FOLLOWUP_STATUS = #{followupStatus}, ]]></if>
+      <if test="followuper != null"><![CDATA[ FOLLOWUPER = #{followuper}, ]]></if>
+    </trim>
+    <![CDATA[ WHERE ID = #{id} ]]>
+  </update>
+  
+  <select id="findFollowupRecordById" parameterType="long" resultMap="FollowupRecordResult">
+    <![CDATA[ SELECT ID, SPECIMEN_NO, HIS_ID, SUBJECT, FOLLOWUP_DATE, FOLLOWUP_CONTENT, FOLLOWUP_STATUS, FOLLOWUPER FROM FOLLOW_UP_RECORD WHERE ID = #{id} ]]>
+  </select>
+  
+  <select id="findFollowupRecordForList" parameterType="string" resultMap="FollowupRecordResult">
+    <![CDATA[ 
+      SELECT ID, SPECIMEN_NO, HIS_ID, SUBJECT, FOLLOWUP_DATE, FOLLOWUP_CONTENT, FOLLOWUP_STATUS, FOLLOWUPER FROM FOLLOW_UP_RECORD
+      WHERE SPECIMEN_NO = #{specimenNo} ORDER BY FOLLOWUP_DATE ASC
+    ]]>
+  </select>
+
+</mapper>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gb.chrom.core.mapper.ReportInterpretationMapper">
+
+  <resultMap type="reportInterpretation" id="ReportInterpretationResult">
+    <result column="ID" property="id" />
+    <result column="TYPE_ID" property="typeId" />
+    <result column="TITLE" property="title"/>
+    <result column="INTERPRETATION" property="interpretation" />
+    <result column="GMT_MODIFIED" property="gmtModified" />
+    
+    <association property="type" javaType="specimenType" column="TYPE_ID" select="com.gb.chrom.core.mapper.SpecimenTypeMapper.findSpecimenTypeById" />
+  </resultMap>
+  
+  <insert id="saveReportInterpretation" parameterType="reportInterpretation" flushCache="true" useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[ INSERT INTO REPORT_INTERPRETATION ( TYPE_ID, TITLE, INTERPRETATION ) VALUES ( #{typeId}, #{title}, #{interpretation} ) ]]>
+  </insert>
+  
+  <delete id="deleteReportInterpretationById" parameterType="long" flushCache="true">
+    <![CDATA[ DELETE FROM REPORT_INTERPRETATION WHERE ID = #{id} ]]>
+  </delete>
+  
+  <update id="updateReportInterpretation" parameterType="reportInterpretation" flushCache="true">
+    <![CDATA[ UPDATE REPORT_INTERPRETATION ]]>
+    <trim prefix="SET" suffixOverrides=",">
+      <if test="typeId != null"><![CDATA[ TYPE_ID = #{typeId}, ]]></if>
+      <if test="title != null"><![CDATA[ TITLE = #{title}, ]]></if>
+      <if test="interpretation != null"><![CDATA[ INTERPRETATION = #{interpretation}, ]]></if>
+    </trim>
+    <![CDATA[ WHERE ID = #{id} ]]>
+  </update>
+
+  <select id="findReportInterpretationById" parameterType="long" resultMap="ReportInterpretationResult">
+    <![CDATA[ SELECT ID, TYPE_ID, TITLE, INTERPRETATION FROM REPORT_INTERPRETATION WHERE ID = #{id} ]]>
+  </select>
+  
+  <select id="findReportInterpretationForList" parameterType="reportInterpretationQuery" resultMap="ReportInterpretationResult">
+    <![CDATA[ SELECT ID, TYPE_ID, TITLE, INTERPRETATION, STATUS, GMT_MODIFIED FROM REPORT_INTERPRETATION ]]>
+    <trim prefix="WHERE" prefixOverrides="AND |OR ">
+	  <if test="typeId != null"><![CDATA[ AND TYPE_ID = #{typeId} ]]></if>
+      <if test='keyword != null and keyword !=""'><![CDATA[ AND TITLE LIKE CONCAT('%', #{keyword}, '%') ]]></if>
+    </trim>
+    <![CDATA[ ORDER BY ID DESC ]]>
+  </select>
+  
+</mapper>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gb.chrom.core.mapper.SpecimenMapper">
+
+  <resultMap type="specimen" id="SpecimenResult">
+    <result column="ID" property="id" />
+    <result column="HIS_ID" property="hisId" />
+    <result column="TYPE_ID" property="typeId" />
+    <result column="SERIAL_NO" property="serialNo" />
+    <result column="SPECIMENT_NO" property="specimenNo" />
+    <result column="PATIENT_ID" property="patientId" />
+    <result column="LINE_TYPE" property="lineType"/>
+    <result column="LINE_PRINT_COUNT" property="linePrintCount" />
+    <result column="INSPECTION_DEPT" property="inspectionDept" />
+    <result column="INSPECTION_PHYSICIAN" property="inspectionPhysician" />
+    <result column="CULTURE_STATUS" property="cultureStatus" />
+    <result column="ANALYSIS_STATUS" property="analysisStatus" />
+    <result column="REPORT_STATUS" property="reportStatus" />
+    <result column="ANALYSIS_RESULT" property="analysisResult" />
+    <result column="ANALYSIS_MET_IMG" property="analysisMetImg" />
+    <result column="ANALYSIS_KAR_IMG" property="analysisKarImg" />
+    <result column="LABORATORIAN_ID" property="laboratorianId"/>
+    <result column="REMARKS" property="remarks" />
+    <result column="STATUS" property="status" />
+    <result column="CREATER_ID" property="createrId" />
+    <result column="GMT_CREATE" property="gmtCreate" />
+    
+    <association property="type" javaType="specimenType" column="TYPE_ID" select="com.gb.chrom.core.mapper.SpecimenTypeMapper.findSpecimenTypeById" />
+    <association property="patient" column="PATIENT_ID" javaType="patient" select="com.gb.chrom.core.mapper.PatientMapper.findPatientById" />
+    <collection property="cultureList" column="ID" ofType="specimenCulture"  select="com.gb.chrom.core.mapper.SpecimenCultureMapper.findSpecimenCultureProcessForList" />
+  </resultMap>
+
+  <insert id="saveSpecimen" parameterType="specimen" flushCache="true" useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[ 
+      INSERT INTO SPECIMEN ( 
+        HIS_ID, TYPE_ID, SERIAL_NO, SPECIMENT_NO, PATIENT_ID, LINE_TYPE, LINE_PRINT_COUNT, INSPECTION_PHYSICIAN, INSPECTION_DEPT,
+        CULTURE_STATUS, ANALYSIS_STATUS, REPORT_STATUS, LABORATORIAN_ID, REMARKS, CREATER_ID, CREATE_YEAR, GMT_CREATE
+      ) VALUES ( 
+        #{hisId}, #{typeId}, #{serialNo}, #{specimenNo}, #{patientId}, #{lineType}, #{linePrintCount}, #{inspectionPhysician}, #{inspectionDept},
+        0, 0, 0, #{laboratorianId}, #{remarks}, #{createrId}, YEAR(NOW()), #{gmtCreate}
+      )
+    ]]>
+  </insert>
+  
+  <update id="updateSpecimen" parameterType="specimen" flushCache="true">
+    <![CDATA[ UPDATE SPECIMEN ]]>
+    <trim prefix="SET" suffixOverrides=",">
+      <if test="hisId != null"><![CDATA[ HIS_ID = #{hisId}, ]]></if>
+      <if test="typeId != null"><![CDATA[ TYPE_ID = #{typeId}, ]]></if>
+      <if test="specimenNo != null"><![CDATA[ SPECIMENT_NO = #{specimenNo}, ]]></if>
+      <if test="lineType != null"><![CDATA[ LINE_TYPE = #{lineType}, ]]></if>
+      <if test="linePrintCount != null"><![CDATA[ LINE_PRINT_COUNT = #{linePrintCount}, ]]></if>
+      <if test="inspectionPhysician != null"><![CDATA[ INSPECTION_PHYSICIAN = #{inspectionPhysician}, ]]></if>
+      <if test="inspectionDept != null"><![CDATA[ INSPECTION_DEPT = #{inspectionDept}, ]]></if>
+      <if test="cultureStatus != null"><![CDATA[ CULTURE_STATUS = #{cultureStatus}, ]]></if>
+      <if test="cultureCompletedTime != null"><![CDATA[ CULTURE_COMPLETED_TIME = #{cultureCompletedTime}, ]]></if>
+      <if test="analysisStatus != null"><![CDATA[ ANALYSIS_STATUS = #{analysisStatus}, ]]></if>
+      <if test="analysisCompletedTime != null"><![CDATA[ ANALYSIS_COMPLETED_TIME = #{analysisCompletedTime}, ]]></if>
+      <if test="reportStatus != null"><![CDATA[ REPORT_STATUS = #{reportStatus}, ]]></if>
+      <if test="reportTime != null"><![CDATA[ REPORT_TIME = #{reportTime}, ]]></if>
+      <if test="analysisResult != null"><![CDATA[ ANALYSIS_RESULT = #{analysisResult}, ]]></if>
+      <if test="analysisMetImg != null"><![CDATA[ ANALYSIS_MET_IMG = #{analysisMetImg}, ]]></if>
+      <if test="analysisKarImg != null"><![CDATA[ ANALYSIS_KAR_IMG = #{analysisKarImg}, ]]></if>
+      <if test="remarks != null"><![CDATA[ REMARKS = #{remarks}, ]]></if>
+      <if test="status != null"><![CDATA[ STATUS = #{status}, ]]></if>
+    </trim>
+    <![CDATA[ WHERE ID = #{id} ]]>
+  </update>
+
+  <select id="findSpecimenById" parameterType="long" resultMap="SpecimenResult">
+    <![CDATA[ 
+      SELECT ID, HIS_ID, TYPE_ID, SERIAL_NO, SPECIMENT_NO, PATIENT_ID, LINE_TYPE, LINE_PRINT_COUNT, INSPECTION_PHYSICIAN, INSPECTION_DEPT,
+      CULTURE_STATUS, CULTURE_COMPLETED_TIME, ANALYSIS_STATUS, ANALYSIS_COMPLETED_TIME, REPORT_STATUS, REPORT_TIME,
+      ANALYSIS_RESULT, ANALYSIS_MET_IMG, ANALYSIS_KAR_IMG, LABORATORIAN_ID, REMARKS, GMT_CREATE FROM SPECIMEN WHERE ID = #{id}
+    ]]>
+  </select>
+  
+  <select id="findSpecimenBySpecimenNo" parameterType="string" resultMap="SpecimenResult">
+    <![CDATA[ 
+      SELECT ID, HIS_ID, TYPE_ID, SERIAL_NO, SPECIMENT_NO, PATIENT_ID, LINE_TYPE, LINE_PRINT_COUNT, INSPECTION_PHYSICIAN, INSPECTION_DEPT,
+      CULTURE_STATUS, CULTURE_COMPLETED_TIME, ANALYSIS_STATUS, ANALYSIS_COMPLETED_TIME, REPORT_STATUS, REPORT_TIME,
+      ANALYSIS_RESULT, ANALYSIS_MET_IMG, ANALYSIS_KAR_IMG, LABORATORIAN_ID, REMARKS, GMT_CREATE FROM SPECIMEN WHERE SPECIMENT_NO = #{specimenNo}
+    ]]>
+  </select>
+  
+  <select id="findSpecimenByHisId" parameterType="string" resultMap="SpecimenResult">
+    <![CDATA[ SELECT ID, HIS_ID, TYPE_ID, SERIAL_NO, SPECIMENT_NO, PATIENT_ID, LINE_TYPE, LINE_PRINT_COUNT FROM SPECIMEN WHERE HIS_ID = #{hisId} ]]>
+  </select>
+  
+  <select id="findSpecimenForList" parameterType="long" resultMap="SpecimenResult">
+    <![CDATA[ 
+      SELECT ID, HIS_ID, TYPE_ID, SPECIMENT_NO, PATIENT_ID, LINE_TYPE, LINE_PRINT_COUNT, INSPECTION_PHYSICIAN, INSPECTION_DEPT,
+      CULTURE_STATUS, ANALYSIS_STATUS, REPORT_STATUS, STATUS, GMT_CREATE FROM SPECIMEN
+    ]]>
+    <trim prefix="WHERE" prefixOverrides="AND |OR ">
+      <if test="createrId != null"><![CDATA[ AND CREATER_ID = #{createrId} ]]></if>
+      <if test='keyword != null and keyword !=""'><![CDATA[ AND ( SPECIMENT_NO LIKE CONCAT(#{keyword}, '%') OR HIS_ID LIKE CONCAT(#{keyword}, '%') ) ]]></if>
+      <if test="typeId != null"><![CDATA[ AND TYPE_ID = #{typeId} ]]></if>
+      <if test="startDate != null"><![CDATA[ AND GMT_CREATE >= #{startDate} ]]></if>
+      <if test="endDate != null"><![CDATA[ AND GMT_CREATE < DATE_ADD(#{endDate}, INTERVAL 1 DAY) ]]></if>
+      <if test="analysisStatus != null"><![CDATA[ AND ANALYSIS_STATUS = #{analysisStatus} ]]></if>
+      <if test="status != null"><![CDATA[ AND STATUS = #{status} ]]></if>
+      <if test="idList != null">
+      <![CDATA[ AND ID IN ( ]]>
+        <foreach collection="idList" index="idx" item="i" separator=","> <![CDATA[ #{i} ]]> </foreach>
+      <![CDATA[ ) ]]>
+      </if>
+    </trim>
+    <![CDATA[ ORDER BY ID DESC ]]>
+  </select>
+  
+  <select id="findSpecimenYearMaxSerialNo" parameterType="hashMap" resultType="long">
+    <![CDATA[ SELECT MAX(SERIAL_NO) FROM SPECIMEN WHERE TYPE_ID = #{typeId} AND CREATE_YEAR = #{year} ]]>
+  </select>
+  
+  <select id="findLastSpecimenAnalystId" parameterType="hashMap" resultType="long">
+    <![CDATA[ 
+      SELECT s.LABORATORIAN_ID FROM SPECIMEN s INNER JOIN USER u ON u.ID = s.LABORATORIAN_ID 
+      WHERE s.TYPE_ID = #{specimenTypeId} AND u.TYPE = #{userType} ORDER BY s.ID DESC LIMIT 1 
+    ]]>
+  </select>
+  
+</mapper>

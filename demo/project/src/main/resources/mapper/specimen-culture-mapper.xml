@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gb.chrom.core.mapper.SpecimenCultureMapper">
+
+  <resultMap type="specimen" id="SpecimenResult">
+    <result column="ID" property="id" />
+    <result column="HIS_ID" property="hisId" />
+    <result column="TYPE_ID" property="typeId" />
+    <result column="SERIAL_NO" property="serialNo" />
+    <result column="SPECIMENT_NO" property="specimenNo" />
+    <result column="PATIENT_ID" property="patientId" />
+    <result column="CULTURE_STATUS" property="cultureStatus" />
+    <result column="GMT_CREATE" property="gmtCreate" />
+    
+    <association property="type" javaType="specimenType" column="TYPE_ID" select="com.gb.chrom.core.mapper.SpecimenTypeMapper.findSpecimenTypeById" />
+    <collection property="cultureList" column="ID" ofType="specimenCulture"  select="findSpecimenCultureProcessForList" />
+  </resultMap>
+  
+  <resultMap type="specimenCulture" id="SpecimenCultureResult">
+    <result column="SPECIMEN_ID" property="specimenId" />
+    <result column="PROCESS_ORDER" property="processOrder" />
+    <result column="PROCESS_STEP" property="processStep" />
+    <result column="PROCESS_TIME" property="processTime" />
+    <result column="REMARK" property="remark" />
+    <result column="COMPLETED_STATUS" property="completedStatus" />
+  </resultMap>
+  
+  <!-- 
+  <select id="findCultureSpecimenNoForList" parameterType="hashMap" resultType="string">
+    <if test="processIndex == 0"><![CDATA[ SELECT SPECIMENT_NO FROM SPECIMEN WHERE TYPE_ID = #{typeId} AND ID NOT IN (SELECT SPECIMEN_ID FROM SPECIMEN_CULTURE) ]]></if>
+    <if test="processIndex != 0">
+      <![CDATA[ 
+        SELECT s.SPECIMENT_NO, MAX(sc.PROCESS_ORDER) AS PROCESS_INDEX FROM SPECIMEN_CULTURE sc
+        INNER JOIN SPECIMEN s ON s.ID = sc.SPECIMEN_ID WHERE s.TYPE_ID = #{typeId} GROUP BY s.ID HAVING PROCESS_INDEX = #{processIndex}
+      ]]>
+    </if>
+  </select>
+   -->
+  <select id="findCultureSpecimenNoForList" parameterType="hashMap" resultType="string">
+    <![CDATA[ SELECT SPECIMENT_NO FROM SPECIMEN WHERE TYPE_ID = #{typeId} AND STATUS = 1 AND CULTURE_STATUS = 0 ]]>
+  </select>
+  
+  <select id="findCultureSpecimenById" parameterType="long" resultMap="SpecimenResult">
+    <![CDATA[ SELECT ID, HIS_ID, TYPE_ID, SERIAL_NO, SPECIMENT_NO, PATIENT_ID, CULTURE_STATUS, GMT_CREATE FROM SPECIMEN WHERE  ID = #{id} ]]>
+  </select>
+  
+  <select id="findCultureSpecimenForList" parameterType="specimenQuery" resultMap="SpecimenResult">
+    <![CDATA[ SELECT ID, HIS_ID, TYPE_ID, SERIAL_NO, SPECIMENT_NO, PATIENT_ID, CULTURE_STATUS, GMT_CREATE FROM SPECIMEN ]]>
+    <trim prefix="WHERE" prefixOverrides="AND |OR ">
+      <if test='keyword != null and keyword !=""'><![CDATA[ AND ( SPECIMENT_NO LIKE CONCAT(#{keyword}, '%') OR HIS_ID LIKE CONCAT(#{keyword}, '%') ) ]]></if>
+      <if test="typeId != null"><![CDATA[ AND TYPE_ID = #{typeId} ]]></if>
+      <if test="startDate != null"><![CDATA[ AND GMT_CREATE >= #{startDate} ]]></if>
+      <if test="endDate != null"><![CDATA[ AND GMT_CREATE < DATE_ADD(#{endDate}, INTERVAL 1 DAY) ]]></if>
+      <if test="cultureStatus != null"><![CDATA[ AND CULTURE_STATUS = #{cultureStatus} ]]></if>
+      <![CDATA[ AND STATUS = 1 ]]>
+    </trim>
+    <![CDATA[ ORDER BY CULTURE_STATUS, ID DESC ]]>
+  </select>
+
+  <select id="findSpecimenCultureProcessForList" parameterType="long" resultMap="SpecimenCultureResult">
+    <![CDATA[ SELECT PROCESS_ORDER, PROCESS_STEP, PROCESS_TIME, REMARK, COMPLETED_STATUS FROM SPECIMEN_CULTURE WHERE SPECIMEN_ID = #{specimenId} ORDER BY PROCESS_ORDER ASC ]]>
+  </select>
+
+  <insert id="saveSpecimenCulture" parameterType="specimenCulture" flushCache="true" useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[ 
+      INSERT INTO SPECIMEN_CULTURE ( SPECIMEN_ID, HANDLER_ID, PROCESS_ORDER, PROCESS_STEP, PROCESS_TIME, REMARK, COMPLETED_STATUS )
+      VALUES ( #{specimenId}, #{handlerId}, #{processOrder}, #{processStep}, #{processTime}, #{remark}, #{completedStatus} )
+    ]]>
+  </insert>
+
+  <insert id="batchSaveSpecimensCultureList" parameterType="arrayList" flushCache="true">
+    <![CDATA[ INSERT INTO SPECIMEN_CULTURE ( SPECIMEN_ID, HANDLER_ID, PROCESS_ORDER, PROCESS_STEP, PROCESS_TIME, REMARK, COMPLETED_STATUS ) VALUE ]]>
+    <foreach collection="list" item="clt" index="i" separator=",">
+    <![CDATA[ ( #{clt.specimenId}, #{clt.handlerId}, #{clt.processOrder}, #{clt.processStep}, #{clt.processTime}, #{clt.remark}, #{clt.completedStatus} ) ]]>
+    </foreach>
+  </insert>
+
+</mapper>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gb.chrom.core.mapper.SlideTemplateItemMapper">
+
+  <resultMap type="slideTemplateItem" id="SlideTemplateItemResult">
+    <id column="ID" property="id" />
+    <result column="TEMPLATE_ID" property="tmplId" />
+    <result column="TYPE" property="type" />
+    <result column="VALUE" property="value" />
+    <result column="FONT_SIZE" property="fontSize" />
+    <result column="POINT_X" property="pointX" />
+    <result column="POINT_Y" property="pointY" />
+    <result column="WIDTH" property="width" />
+    <result column="HEIGHT" property="height" />
+    <result column="PADDING" property="padding" />
+  </resultMap>
+
+  <select id="findSlideTemplateItemForList" resultMap="SlideTemplateItemResult">
+    <![CDATA[ 
+      SELECT ID, TEMPLATE_ID, TYPE, VALUE, FONT_SIZE, POINT_X, POINT_Y, WIDTH, HEIGHT, PADDING FROM SLIDE_TEMPLATE_ITEM WHERE TEMPLATE_ID = #{tmplId} 
+    ]]>
+  </select>
+
+  <insert id="saveSlideTemplateItemList" parameterType="arrayList" flushCache="true">
+    <![CDATA[ INSERT INTO SLIDE_TEMPLATE_ITEM ( TEMPLATE_ID, TYPE, VALUE, FONT_SIZE, POINT_X, POINT_Y, WIDTH, HEIGHT, PADDING ) VALUES ]]>
+    <foreach collection="list" index="index" item="i" separator=",">
+      <![CDATA[ ( #{i.tmplId}, #{i.type}, #{i.value}, #{i.fontSize}, #{i.pointX}, #{i.pointY}, #{i.width}, #{i.height}, #{i.padding} ) ]]>
+    </foreach>
+  </insert>
+  
+  <delete id="deleteSlideTemplateItemByTemplateId" parameterType="long" flushCache="true">
+    <![CDATA[ DELETE FROM SLIDE_TEMPLATE_ITEM WHERE TEMPLATE_ID = #{tmplId} ]]>
+  </delete>
+
+</mapper>

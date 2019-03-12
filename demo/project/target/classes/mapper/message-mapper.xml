@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gb.chrom.core.mapper.MessageMapper">
+
+  <resultMap type="message" id="MessageResult">
+    <result column="ID" property="id" />
+    <result column="TITLE" property="title" />
+    <result column="BRIEF" property="brief" />
+    <result column="CONTENT" property="content" />
+    <result column="RELEASE_DATE" property="releaseDate" />
+    <result column="RELEASER_ID" property="releaserId" />
+    <result column="STATUS" property="status" />
+    <result column="GMT_MODIFIED" property="gmtModified" />
+  </resultMap>
+
+  <insert id="saveMessage" parameterType="message" flushCache="true" useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[ INSERT INTO MESSAGE ( TITLE, BRIEF, CONTENT, RELEASE_DATE, RELEASER_ID, STATUS ) VALUES ( #{title}, #{brief}, #{content}, #{releaseDate}, #{releaserId}, 1 ) ]]>
+  </insert>
+
+  <delete id="deleteMessageById" parameterType="long" flushCache="true">
+    <![CDATA[ DELETE FROM MESSAGE WHERE ID = #{id} ]]>
+  </delete>
+
+  <update id="updateMessage" parameterType="message" flushCache="true">
+    <![CDATA[ UPDATE MESSAGE ]]>
+    <trim prefix="SET" suffixOverrides=",">
+      <if test="title != null"><![CDATA[ TITLE = #{title}, ]]></if>
+      <if test="brief != null"><![CDATA[ BRIEF = #{brief}, ]]></if>
+      <if test="content != null"><![CDATA[ CONTENT = #{content}, ]]></if>
+      <if test="status != null"><![CDATA[ STATUS = #{status} ]]></if>
+    </trim>
+    <![CDATA[ WHERE ID = #{id} ]]>
+  </update>
+
+  <select id="findMessageById" parameterType="long" resultMap="MessageResult">
+    <![CDATA[ SELECT ID, TITLE, BRIEF, CONTENT, RELEASE_DATE FROM MESSAGE WHERE ID = #{id} ]]>
+  </select>
+
+  <select id="findMessageForList" parameterType="long" resultMap="MessageResult">
+    <![CDATA[ SELECT ID, TITLE, BRIEF, CONTENT, RELEASE_DATE, STATUS, GMT_MODIFIED FROM MESSAGE ]]>
+    <trim prefix="WHERE" prefixOverrides="AND |OR ">
+      <if test="startDate != null"><![CDATA[ AND RELEASE_DATE >= #{startDate} ]]></if>
+      <if test="endDate != null"><![CDATA[ AND RELEASE_DATE <= #{endDate} ]]></if>
+      <if test='keyword != null and keyword !=""'><![CDATA[ AND TITLE LIKE CONCAT('%', #{keyword}, '%') ]]></if>
+      <if test="status != null"><![CDATA[ AND STATUS = #{status} ]]></if>
+    </trim>
+    <![CDATA[ ORDER BY ID DESC ]]>
+  </select>
+
+</mapper>

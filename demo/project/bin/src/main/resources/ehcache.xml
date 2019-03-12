@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache  updateCheck="false" dynamicConfig="false">
+  <diskStore path="java.io.tmpdir/mpms-ehcache"/>
+  
+  <defaultCache
+      maxElementsInMemory="10000"
+      eternal="false"
+      timeToIdleSeconds="120"
+      timeToLiveSeconds="120"
+      overflowToDisk="false"
+      diskPersistent="false"
+      diskExpiryThreadIntervalSeconds="120" />
+    
+  <cache name="shiro-activeSessionCache"
+      maxElementsInMemory="10000"
+      overflowToDisk="true"
+      eternal="true"
+      timeToLiveSeconds="0"
+      timeToIdleSeconds="0"
+      diskPersistent="true"
+      diskExpiryThreadIntervalSeconds="600" />
+
+    <cache name="org.apache.shiro.realm.text.PropertiesRealm-0-accounts"
+      maxElementsInMemory="1000"
+      eternal="true"
+      overflowToDisk="true" />
+
+  <!-- 登录记录缓存 锁定10分钟 -->
+  <cache name="passwordRetryCache" 
+      maxElementsInMemory="10000"
+      maxElementsOnDisk="100000" 
+      eternal="false" 
+      timeToIdleSeconds="600"
+      timeToLiveSeconds="600" 
+      overflowToDisk="false" 
+      diskPersistent="false" />
+   
+   <cache name="sys-config-cache"
+      maxElementsInMemory="100"
+      overflowToDisk="true"
+      eternal="true"
+      timeToLiveSeconds="0"
+      timeToIdleSeconds="0"
+      diskPersistent="true"
+      diskExpiryThreadIntervalSeconds="600" />
+      
+   <cache name="unread-notice-cache"
+      maxElementsInMemory="1000"
+      overflowToDisk="true"
+      eternal="true"
+      timeToLiveSeconds="0"
+      timeToIdleSeconds="0"
+      diskPersistent="true"
+      diskExpiryThreadIntervalSeconds="600" />
+</ehcache>
